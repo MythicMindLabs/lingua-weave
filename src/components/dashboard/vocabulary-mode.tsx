@@ -7,6 +7,7 @@ import { Loader2, Lightbulb, Volume2 } from 'lucide-react';
 import { aiVocabularyTutor, type AIVocabularyTutorOutput } from '@/ai/flows/ai-vocabulary-tutor';
 import { aiTextToSpeech } from '@/ai/flows/ai-text-to-speech';
 import { useToast } from '@/hooks/use-toast';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface VocabularyModeProps {
   language: string;
@@ -86,12 +87,33 @@ export function VocabularyMode({ language, topic }: VocabularyModeProps) {
       </Card>
 
       {isLoading && (
-        <div className="flex justify-center items-center py-10">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <div className="space-y-6">
+          <Card>
+            <CardHeader><CardTitle className="font-headline text-xl">New Vocabulary</CardTitle></CardHeader>
+            <CardContent className="space-y-3">
+              <Skeleton className="h-8 w-full" />
+              <Skeleton className="h-8 w-full" />
+              <Skeleton className="h-8 w-2/3" />
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader><CardTitle className="font-headline text-xl">Example Sentences</CardTitle></CardHeader>
+            <CardContent className="space-y-4">
+              <Skeleton className="h-8 w-full" />
+              <Skeleton className="h-8 w-full" />
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader><CardTitle className="font-headline text-xl">Reinforcement Exercises</CardTitle></CardHeader>
+            <CardContent className="space-y-2">
+              <Skeleton className="h-6 w-full" />
+              <Skeleton className="h-6 w-5/6" />
+            </CardContent>
+          </Card>
         </div>
       )}
 
-      {lesson && (
+      {lesson && !isLoading && (
         <div className="space-y-6 animate-in fade-in-50 duration-500">
           <Card>
             <CardHeader>
