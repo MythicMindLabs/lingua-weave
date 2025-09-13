@@ -33,30 +33,30 @@ This diagram illustrates the overall user flow and component interaction within 
 ```mermaid
 graph TD
     subgraph "User Interaction"
-        A[User] --&gt; |Selects Language, Dialect, Topic| B(LinguaWeave UI);
-        A --&gt; |Selects Learning Mode| B;
+        A[User] --> |Selects Language, Dialect, Topic| B(LinguaWeave UI);
+        A --> |Selects Learning Mode| B;
     end
 
     subgraph "Frontend (React Components)"
-        B --&gt; C{Mode Selection};
-        C --&gt; |If 'Conversation'| D[ConversationMode];
-        C --&gt; |If 'Grammar'| E[GrammarMode];
-        C --&gt; |If 'Vocabulary'| F[VocabularyMode];
+        B --> C{Mode Selection};
+        C --> |If 'Conversation'| D[ConversationMode];
+        C --> |If 'Grammar'| E[GrammarMode];
+        C --> |If 'Vocabulary'| F[VocabularyMode];
     end
 
     subgraph "Backend AI Flows (Genkit)"
-        D --&gt; |Sends user message| G(aiChatbot Flow);
-        G --&gt; |Returns AI response| D;
+        D --> |Sends user message| G(aiChatbot Flow);
+        G --> |Returns AI response| D;
         
-        E --&gt; |Sends text to check| H(aiGrammarCheck Flow);
-        H --&gt; |Returns correction & explanation| E;
+        E --> |Sends text to check| H(aiGrammarCheck Flow);
+        H --> |Returns correction & explanation| E;
         
-        F --&gt; |Requests new lesson| I(aiVocabularyTutor Flow);
-        I --&gt; |Returns lesson content| F;
+        F --> |Requests new lesson| I(aiVocabularyTutor Flow);
+        I --> |Returns lesson content| F;
         
-        D --&gt; |Requests audio for AI response| J(aiTextToSpeech Flow);
-        F --&gt; |Requests audio for vocabulary| J;
-        J --&gt; |Returns audio data| B;
+        D --> |Requests audio for AI response| J(aiTextToSpeech Flow);
+        F --> |Requests audio for vocabulary| J;
+        J --> |Returns audio data| B;
     end
 
     style A fill:#D8DCE6,stroke:#483D8B,stroke-width:2px
@@ -134,6 +134,66 @@ graph TD
     style LWS fill:#E6E6FA,stroke:#483D8B,stroke-width:2px
     style U fill:#D8DCE6,stroke:#483D8B,stroke-width:2px
     style AI fill:#E6E6FA,stroke:#800080,stroke-width:2px,stroke-dasharray: 5 5
+```
+
+### Data Flow Diagram (Level 1)
+
+This diagram breaks down the main process into smaller sub-processes to show internal data flow in more detail.
+
+```mermaid
+graph TD
+    subgraph "External Entities"
+        User
+    end
+
+    subgraph "AI Service"
+        Gemini(Gemini AI Model)
+    end
+    
+    subgraph "LinguaWeave System"
+        direction LR
+        
+        UI(Frontend UI)
+        
+        subgraph "Backend Processes (Genkit Flows)"
+            P1(1.0<br>AI Chatbot)
+            P2(2.0<br>Grammar Check)
+            P3(3.0<br>Vocabulary Tutor)
+            P4(4.0<br>Text-to-Speech)
+        end
+    end
+
+    User -- "User Message & Settings" --> UI
+    UI -- "Chat Input" --> P1
+    UI -- "Text for Grammar Check" --> P2
+    UI -- "Vocabulary Request" --> P3
+    
+    P1 -- "Chat Prompt" --> Gemini
+    P2 -- "Grammar Prompt" --> Gemini
+    P3 -- "Vocabulary Prompt" --> Gemini
+    
+    Gemini -- "AI Response" --> P1
+    Gemini -- "Correction & Explanation" --> P2
+    Gemini -- "Lesson Content" --> P3
+
+    P1 -- "AI Chat Message" --> UI
+    P2 -- "Grammar Result" --> UI
+    P3 -- "Vocabulary Lesson" --> UI
+    
+    UI -- "Text to Synthesize" --> P4
+    P4 -- "TTS Prompt" --> Gemini
+    Gemini -- "Audio Data" --> P4
+    P4 -- "Audio for Playback" --> UI
+    
+    UI -- "Display Updates & Audio" --> User
+
+    style User fill:#D8DCE6,stroke:#483D8B,stroke-width:2px
+    style Gemini fill:#E6E6FA,stroke:#800080,stroke-width:2px,stroke-dasharray: 5 5
+    style UI fill:#E6E6FA,stroke:#483D8B,stroke-width:2px
+    style P1 fill:#E6E6FA,stroke:#483D8B,stroke-width:2px
+    style P2 fill:#E6E6FA,stroke:#483D8B,stroke-width:2px
+    style P3 fill:#E6E6FA,stroke:#483D8B,stroke-width:2px
+    style P4 fill:#E6E6FA,stroke:#483D8B,stroke-width:2px
 ```
 
 ## Getting Started
