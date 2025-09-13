@@ -9,9 +9,9 @@
  */
 
 import { ai } from '@/ai/genkit';
+import { googleAI } from '@genkit-ai/googleai';
 import { z } from 'genkit';
 import wav from 'wav';
-import { googleAI } from '@genkit-ai/googleai';
 
 const AiTextToSpeechInputSchema = z.object({
   text: z.string().describe('The text to convert to speech.'),
@@ -42,7 +42,7 @@ async function toWav(
       bitDepth: sampleWidth * 8,
     });
 
-    const bufs: any[] = [];
+    let bufs = [] as any[];
     writer.on('error', reject);
     writer.on('data', function (d) {
       bufs.push(d);
@@ -78,10 +78,12 @@ const aiTextToSpeechFlow = ai.defineFlow(
     if (!media) {
       throw new Error('no media returned');
     }
+
     const audioBuffer = Buffer.from(
       media.url.substring(media.url.indexOf(',') + 1),
       'base64'
     );
+
     return {
       audio: 'data:audio/wav;base64,' + (await toWav(audioBuffer)),
     };
