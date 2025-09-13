@@ -36,7 +36,7 @@ const aiImageGeneratorFlow = ai.defineFlow(
       prompt: `Generate a simple, clear, and vibrant flashcard-style image for the following concept: ${prompt}. The image should be easy to understand for a language learner. Avoid text and complex scenes.`,
     });
     
-    if (!media.url) {
+    if (!media?.url) {
         throw new Error('Image generation failed to produce a URL.');
     }
 
