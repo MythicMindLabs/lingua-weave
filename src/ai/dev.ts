@@ -1,1 +1,6 @@
-// Flows will be imported for their side effects in this file.
+import { config } from 'dotenv';
+config();
+
+import '@/ai/flows/ai-grammar-check.ts';
+import '@/ai/flows/ai-vocabulary-tutor.ts';
+import '@/ai/flows/ai-chatbot.ts';
