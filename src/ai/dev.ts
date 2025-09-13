@@ -5,4 +5,5 @@ import '@/ai/flows/ai-grammar-check.ts';
 import '@/ai/flows/ai-vocabulary-tutor.ts';
 import '@/ai/flows/ai-chatbot.ts';
 import '@/ai/flows/ai-text-to-speech.ts';
-import '@/ai/flows/ai-image-generator.ts';
+
+    

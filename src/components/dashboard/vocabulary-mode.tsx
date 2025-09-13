@@ -20,7 +20,6 @@ import {
 import { Loader2, Lightbulb, Volume2, Sparkles } from 'lucide-react';
 import { aiVocabularyTutor, type AIVocabularyTutorOutput } from '@/ai/flows/ai-vocabulary-tutor';
 import { aiTextToSpeech } from '@/ai/flows/ai-text-to-speech';
-import { aiImageGenerator } from '@/ai/flows/ai-image-generator';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -82,21 +81,11 @@ export function VocabularyMode({ language, topic }: VocabularyModeProps) {
     }
   };
 
-  const handleVisualize = async (term: string) => {
-    setIsVisualizing(term);
-    try {
-      const { imageUrl } = await aiImageGenerator({ prompt: term });
-      setFlashcard({ term, imageUrl });
-    } catch (error) {
-      console.error('Error generating image:', error);
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: 'Failed to generate image. Please try again.',
-      });
-    } finally {
-      setIsVisualizing(null);
-    }
+  const handleVisualize = (term: string) => {
+    // Create a deterministic-ish seed from the term string
+    const seed = term.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    const imageUrl = `https://picsum.photos/seed/${seed}/600/400`;
+    setFlashcard({ term, imageUrl });
   };
 
   return (
@@ -300,6 +289,7 @@ export function VocabularyMode({ language, topic }: VocabularyModeProps) {
                 alt={`Visualization of ${flashcard.term}`} 
                 fill
                 className="rounded-lg object-cover"
+                data-ai-hint={flashcard.term}
               />
             </div>
           )}
@@ -308,3 +298,5 @@ export function VocabularyMode({ language, topic }: VocabularyModeProps) {
     </>
   );
 }
+
+    
