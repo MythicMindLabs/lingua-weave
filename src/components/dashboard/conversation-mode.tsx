@@ -106,7 +106,7 @@ export function ConversationMode({ language, dialect, topic }: ConversationModeP
   };
 
   const startRecording = useCallback(() => {
-    if (typeof window !== 'undefined' && 'SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+    if (typeof window !== 'undefined' && ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.continuous = false;
@@ -131,7 +131,7 @@ export function ConversationMode({ language, dialect, topic }: ConversationModeP
         toast({
             variant: "destructive",
             title: "Speech Recognition Error",
-            description: `An error occurred: ${event.error}. Please ensure you've granted microphone permissions.`,
+            description: `An error occurred: \${event.error}. Please ensure you've granted microphone permissions.`,
         });
         setIsRecording(false);
       };
@@ -219,7 +219,7 @@ export function ConversationMode({ language, dialect, topic }: ConversationModeP
           <Input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder={`Type or say something in ${language}...`}
+            placeholder={`Type or say something in \${language}...`}
             className="flex-1"
             disabled={isLoading}
             autoComplete="off"
