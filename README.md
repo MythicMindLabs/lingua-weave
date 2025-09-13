@@ -24,6 +24,118 @@ A powerful way to expand LinguaWeave would be to introduce a **Role-Playing Mode
 
 The AI would act as the other character in the scenario (e.g., the waiter, hotel receptionist, or a local stranger), guiding the user through the conversation. This would provide highly contextual and practical language practice, helping users build confidence for real-world interactions. This could be implemented by creating a new AI flow that is prompted with the specific role-playing context and objectives.
 
+## Diagrams
+
+### Flow Diagram
+
+This diagram illustrates the overall user flow and component interaction within the application.
+
+```mermaid
+graph TD
+    subgraph "User Interaction"
+        A[User] --&gt; |Selects Language, Dialect, Topic| B(LinguaWeave UI);
+        A --&gt; |Selects Learning Mode| B;
+    end
+
+    subgraph "Frontend (React Components)"
+        B --&gt; C{Mode Selection};
+        C --&gt; |If 'Conversation'| D[ConversationMode];
+        C --&gt; |If 'Grammar'| E[GrammarMode];
+        C --&gt; |If 'Vocabulary'| F[VocabularyMode];
+    end
+
+    subgraph "Backend AI Flows (Genkit)"
+        D --&gt; |Sends user message| G(aiChatbot Flow);
+        G --&gt; |Returns AI response| D;
+        
+        E --&gt; |Sends text to check| H(aiGrammarCheck Flow);
+        H --&gt; |Returns correction & explanation| E;
+        
+        F --&gt; |Requests new lesson| I(aiVocabularyTutor Flow);
+        I --&gt; |Returns lesson content| F;
+        
+        D --&gt; |Requests audio for AI response| J(aiTextToSpeech Flow);
+        F --&gt; |Requests audio for vocabulary| J;
+        J --&gt; |Returns audio data| B;
+    end
+
+    style A fill:#D8DCE6,stroke:#483D8B,stroke-width:2px
+    style B fill:#E6E6FA,stroke:#483D8B,stroke-width:2px
+    style C fill:#E6E6FA,stroke:#483D8B,stroke-width:2px
+    style D fill:#E6E6FA,stroke:#483D8B,stroke-width:2px
+    style E fill:#E6E6FA,stroke:#483D8B,stroke-width:2px
+    style F fill:#E6E6FA,stroke:#483D8B,stroke-width:2px
+
+    style G fill:#E6E6FA,stroke:#800080,stroke-width:2px,stroke-dasharray: 5 5
+    style H fill:#E6E6FA,stroke:#800080,stroke-width:2px,stroke-dasharray: 5 5
+    style I fill:#E6E6FA,stroke:#800080,stroke-width:2px,stroke-dasharray: 5 5
+    style J fill:#E6E6FA,stroke:#800080,stroke-width:2px,stroke-dasharray: 5 5
+```
+
+### Sequence Diagram (Conversation Mode)
+
+This diagram shows the sequence of interactions when a user sends a message in Conversation Mode.
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Browser as React UI
+    participant Server as Next.js Server Action
+    participant AI as Genkit/Gemini AI
+
+    User->>Browser: Types message and clicks "Send"
+    Browser->>Server: Calls aiChatbot({ language, topic, userMessage })
+    activate Server
+    Server->>AI: Executes aiChatbotFlow with prompt
+    activate AI
+    AI-->>Server: Returns AI response text
+    deactivate AI
+    Server-->>Browser: Returns { aiResponse: "..." }
+    deactivate Server
+    Browser->>Browser: Updates state with new message
+    Browser->>User: Displays AI response in chat
+
+    alt User clicks "Play Audio"
+        Browser->>Server: Calls aiTextToSpeech({ text: aiResponse })
+        activate Server
+        Server->>AI: Executes aiTextToSpeechFlow
+        activate AI
+        AI-->>Server: Returns audio data
+        deactivate AI
+        Server-->>Browser: Returns { audio: "data:audio/wav;base64,..." }
+        deactivate Server
+        Browser->>User: Plays audio of the response
+    end
+```
+
+### Data Flow Diagram (Level 0)
+
+This diagram provides a high-level overview of how data moves through the LinguaWeave system.
+
+```mermaid
+graph TD
+    subgraph "External Entities"
+        U[User]
+    end
+
+    subgraph "LinguaWeave System"
+        LWS(LinguaWeave Application)
+    end
+    
+    subgraph "AI Services"
+        AI(Gemini AI)
+    end
+
+    U -- "Language selections, text input, voice input" --> LWS;
+    LWS -- "User data, prompts" --> AI;
+    AI -- "Generated responses, corrections, lessons, audio data" --> LWS;
+    LWS -- "UI updates, chat messages, audio playback" --> U;
+
+    style LWS fill:#E6E6FA,stroke:#483D8B,stroke-width:2px
+    style U fill:#D8DCE6,stroke:#483D8B,stroke-width:2px
+    style AI fill:#E6E6FA,stroke:#800080,stroke-width:2px,stroke-dasharray: 5 5
+```
+
 ## Getting Started
 
 1.  **Install dependencies**:
