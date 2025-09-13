@@ -5,8 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2, Lightbulb, Volume2 } from 'lucide-react';
 import { aiVocabularyTutor, type AIVocabularyTutorOutput } from '@/ai/flows/ai-vocabulary-tutor';
+import { aiTextToSpeech } from '@/ai/flows/ai-text-to-speech';
 import { useToast } from '@/hooks/use-toast';
-import { Separator } from '@/components/ui/separator';
 
 interface VocabularyModeProps {
   language: string;
@@ -16,6 +16,7 @@ interface VocabularyModeProps {
 export function VocabularyMode({ language, topic }: VocabularyModeProps) {
   const [lesson, setLesson] = useState<AIVocabularyTutorOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSynthesizing, setIsSynthesizing] = useState<string | null>(null);
   const { toast } = useToast();
 
   const generateLesson = async () => {
@@ -37,6 +38,24 @@ export function VocabularyMode({ language, topic }: VocabularyModeProps) {
       });
     } finally {
       setIsLoading(false);
+    }
+  };
+  
+  const handlePlayAudio = async (text: string) => {
+    setIsSynthesizing(text);
+    try {
+      const { audio } = await aiTextToSpeech({ text });
+      const audioPlayer = new Audio(audio);
+      audioPlayer.play();
+      audioPlayer.onended = () => setIsSynthesizing(null);
+    } catch (error) {
+      console.error('Error synthesizing speech:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Failed to synthesize audio. Please try again.',
+      });
+      setIsSynthesizing(null);
     }
   };
 
@@ -83,8 +102,14 @@ export function VocabularyMode({ language, topic }: VocabularyModeProps) {
                 {lesson.newVocabulary.map((word, index) => (
                   <li key={index} className="flex items-center justify-between p-2 rounded-md hover:bg-muted">
                     <span className="font-medium font-code">{word}</span>
-                    <Button variant="ghost" size="icon" className="h-8 w-8">
-                       <Volume2 className="h-4 w-4" />
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="h-8 w-8"
+                      onClick={() => handlePlayAudio(word)}
+                      disabled={isSynthesizing !== null}
+                    >
+                       {isSynthesizing === word ? <Loader2 className="h-4 w-4 animate-spin" /> : <Volume2 className="h-4 w-4" />}
                        <span className="sr-only">Play audio for {word}</span>
                     </Button>
                   </li>
@@ -102,8 +127,14 @@ export function VocabularyMode({ language, topic }: VocabularyModeProps) {
                 {lesson.exampleSentences.map((sentence, index) => (
                    <li key={index} className="flex items-center justify-between p-2 rounded-md hover:bg-muted">
                     <p className="text-muted-foreground italic">"{sentence}"</p>
-                    <Button variant="ghost" size="icon" className="h-8 w-8">
-                       <Volume2 className="h-4 w-4" />
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="h-8 w-8"
+                      onClick={() => handlePlayAudio(sentence)}
+                      disabled={isSynthesizing !== null}
+                    >
+                       {isSynthesizing === sentence ? <Loader2 className="h-4 w-4 animate-spin" /> : <Volume2 className="h-4 w-4" />}
                        <span className="sr-only">Play audio for sentence</span>
                     </Button>
                   </li>
