@@ -284,9 +284,9 @@ export function VocabularyMode({ language, topic }: VocabularyModeProps) {
           </DialogHeader>
           {flashcard?.imageUrl && (
             <div className="mt-4 relative aspect-square">
-              <Image 
-                src={flashcard.imageUrl} 
-                alt={`Visualization of ${flashcard.term}`} 
+              <Image
+                src={flashcard.imageUrl}
+                alt={`Visualization of ${flashcard.term}`}
                 fill
                 className="rounded-lg object-cover"
                 data-ai-hint={flashcard.term}
@@ -298,5 +298,3 @@ export function VocabularyMode({ language, topic }: VocabularyModeProps) {
     </>
   );
 }
-
-    
