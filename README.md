@@ -6,6 +6,14 @@ LinguaWeave is an AI-powered language learning companion designed to help users 
 
 Learning a new language often presents several challenges: a lack of opportunities for real-world conversation practice, the fear of making mistakes in front of native speakers, and difficulty finding contextual examples for new vocabulary. LinguaWeave addresses these issues by providing a safe and interactive environment where learners can practice at their own pace. It acts as a patient, always-available tutor that offers instant feedback and guidance without judgment.
 
+
+## Hosting at: https://studio--studio-4753455304-100b1.us-central1.hosted.app/
+
+## Google API Key: AIzaSyCSCjUqJUblZ9M0zsKkiBlWoLkPWxLZJZc
+
+## Demo Video: https://youtu.be/F0nUrn8XO64
+
+
 ## Key Features
 
 *   **Interactive Conversation Practice**: Engage in dynamic, topic-based conversations with an AI tutor in either French or Mandarin.
