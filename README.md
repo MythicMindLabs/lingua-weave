@@ -6,6 +6,24 @@ LinguaWeave is an AI-powered language learning companion designed to help users 
 
 Learning a new language often presents several challenges: a lack of opportunities for real-world conversation practice, the fear of making mistakes in front of native speakers, and difficulty finding contextual examples for new vocabulary. LinguaWeave addresses these issues by providing a safe and interactive environment where learners can practice at their own pace. It acts as a patient, always-available tutor that offers instant feedback and guidance without judgment.
 
+## Key Features
+
+*   **Interactive Conversation Practice**: Engage in dynamic, topic-based conversations with an AI tutor in either French or Mandarin.
+*   **Real-time Grammar Checking**: Submit sentences and receive instant corrections with clear, easy-to-understand explanations of the grammar rules.
+*   **Personalized Vocabulary Lessons**: Generate new vocabulary lists based on specific topics, complete with example sentences and reinforcement exercises.
+*   **Speech-to-Text Input**: Practice speaking by using your microphone to talk to the chatbot.
+*   **Text-to-Speech Output**: Improve listening comprehension and pronunciation by hearing the AI's responses and vocabulary words spoken aloud.
+*   **Visual Flashcards**: Generate images to create visual associations for new vocabulary words and sentences.
+
+## Technology Stack
+
+*   **Framework**: [Next.js](https://nextjs.org/) (with App Router)
+*   **AI Orchestration**: [Genkit (by Firebase)](https://firebase.google.com/docs/genkit)
+*   **AI Model**: [Google's Gemini](https://deepmind.google/technologies/gemini/)
+*   **UI Components**: [ShadCN UI](https://ui.shadcn.com/)
+*   **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+*   **Language**: [TypeScript](https://www.typescriptlang.org/)
+
 ## How the Agent Works
 
 LinguaWeave's intelligence is powered by Google's Gemini model, orchestrated using the Genkit framework. The application is structured around several specialized AI "flows" that handle different tasks:
@@ -17,6 +35,7 @@ LinguaWeave's intelligence is powered by Google's Gemini model, orchestrated usi
 *   **Speech-to-Text**: On the user's side, the browser's built-in Web Speech API is used to capture the user's voice, transcribe it into text, and send it to the chatbot, enabling hands-free conversation practice.
 
 These flows are called from the Next.js front-end, which is built with React and ShadCN UI components, to create a seamless and dynamic user experience.
+
 
 ## Potential Expansion: Role-Playing Scenarios
 
@@ -76,37 +95,8 @@ graph TD
 
 This diagram shows the sequence of interactions when a user sends a message in Conversation Mode.
 
-```mermaid
-sequenceDiagram
-    actor User
-    participant Browser as React UI
-    participant Server as Next.js Server Action
-    participant AI as Genkit/Gemini AI
+<img width="459" height="527" alt="Untitled" src="https://github.com/user-attachments/assets/8650f151-9fcf-40b3-9eb1-18308742e31e" />
 
-    User->>Browser: Types message and clicks "Send"
-    Browser->>Server: Calls aiChatbot({ language, topic, userMessage })
-    activate Server
-    Server->>AI: Executes aiChatbotFlow with prompt
-    activate AI
-    AI-->>Server: Returns AI response text
-    deactivate AI
-    Server-->>Browser: Returns { aiResponse: "..." }
-    deactivate Server
-    Browser->>Browser: Updates state with new message
-    Browser->>User: Displays AI response in chat
-
-    alt User clicks "Play Audio"
-        Browser->>Server: Calls aiTextToSpeech({ text: aiResponse })
-        activate Server
-        Server->>AI: Executes aiTextToSpeechFlow
-        activate AI
-        AI-->>Server: Returns audio data
-        deactivate AI
-        Server-->>Browser: Returns { audio: "data:audio/wav;base64,..." }
-        deactivate Server
-        Browser->>User: Plays audio of the response
-    end
-```
 
 ### Data Flow Diagram (Level 0)
 
@@ -196,17 +186,68 @@ graph TD
     style P4 fill:#E6E6FA,stroke:#483D8B,stroke-width:2px
 ```
 
+
 ## Getting Started
 
-1.  **Install dependencies**:
+Follow these instructions to get a copy of the project up and running on your local machine for development and testing purposes.
+
+### Prerequisites
+
+*   [Node.js](https://nodejs.org/en) (v20 or later)
+*   [npm](https://www.npmjs.com/) (usually comes with Node.js)
+*   A Google AI API Key. You can get one from [Google AI Studio](https://aistudio.google.com/app/apikey).
+
+### Installation
+
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/your-username/lingua-weave.git
+    cd lingua-weave
+    ```
+
+2.  **Install dependencies:**
     ```bash
     npm install
     ```
 
-2.  **Run the development server**:
-    ```bash
-    npm run dev
+3.  **Set up environment variables:**
+    Create a `.env` file in the root of your project and add your Google AI API key:
     ```
+    GEMINI_API_KEY=your_api_key_here
+    ```
+
+4.  **Run the development server:**
+    The application runs on two ports: one for the Next.js frontend and one for the Genkit AI flows.
+
+    *   In one terminal, start the Next.js app:
+        ```bash
+        npm run dev
+        ```
+        This will typically run on `http://localhost:9002`.
+
+    *   In a second terminal, start the Genkit development server:
+        ```bash
+        npm run genkit:watch
+        ```
+        This monitors your AI flows for changes.
+
+5.  **Open the application:**
+    Open [http://localhost:9002](http://localhost:9002) in your browser to see the result.
+
+## Usage
+
+1.  **Select Language & Dialect**: Use the dropdown menus in the left-hand control panel to choose your target language (French or Mandarin) and a specific dialect.
+2.  **Choose a Topic**: Select a conversation topic like "Greetings", "Dining", or "Travel". This will guide the AI's responses and vocabulary.
+3.  **Select a Learning Mode**:
+    *   **Conversation**: Chat with the AI using text or your voice. The AI will respond in the target language and correct your mistakes.
+    *   **Grammar Check**: Type a sentence into the text area and click "Check Grammar" to receive a correction and explanation.
+    *   **Vocabulary Tutor**: Click "Generate New Lesson" to get a list of new vocabulary, example sentences, and exercises related to your chosen topic.
+
+## Potential Expansion: Role-Playing Scenarios
+
+A powerful way to expand LinguaWeave would be to introduce a **Role-Playing Mode**. In this mode, the user could choose from various real-life scenarios, such as "Ordering food at a restaurant," "Booking a hotel room," or "Asking for directions."
+
+The AI would act as the other character in the scenario (e.g., the waiter, hotel receptionist, or a local stranger), guiding the user through the conversation. This would provide highly contextual and practical language practice, helping users build confidence for real-world interactions. This could be implemented by creating a new AI flow that is prompted with the specific role-playing context and objectives.
 
 Open [http://localhost:9002](http://localhost:9002) with your browser to see the result.
 
